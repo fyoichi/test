@@ -18,7 +18,7 @@
       <div id="root"></div>
 
   <script type="text/babel">
-      function SeminarApp() {
+      const SeminarApp = React.memo(() => {
           // 各フィールドを個別に管理
           const [title, setTitle] = React.useState('');
           const [theme, setTheme] = React.useState('');
@@ -29,130 +29,121 @@
 
           const [activeTab, setActiveTab] = React.useState('basic');
 
-          const BasicInfoTab = () => (
+          // 入力ハンドラーをuseCallbackで最適化
+          const handleTitleChange = React.useCallback((e) => setTitle(e.target.value), []);
+          const handleThemeChange = React.useCallback((e) => setTheme(e.target.value), []);
+          const handleObjectiveChange = React.useCallback((e) => setObjective(e.target.value), []);
+          const handleTargetAudienceChange = React.useCallback((e) => setTargetAudience(e.target.value), []);
+          const handleDateChange = React.useCallback((e) => setDate(e.target.value), []);
+          const handleTimeChange = React.useCallback((e) => setTime(e.target.value), []);
+
+          // 共通スタイル
+          const inputStyle = React.useMemo(() => ({
+              width: '100%',
+              padding: '12px',
+              fontSize: '16px',
+              border: '2px solid #ddd',
+              borderRadius: '6px',
+              outline: 'none',
+              fontFamily: 'inherit'
+          }), []);
+
+          const labelStyle = React.useMemo(() => ({
+              display: 'block',
+              marginBottom: '0.5rem',
+              fontWeight: 'bold',
+              color: '#333'
+          }), []);
+
+          const formGroupStyle = React.useMemo(() => ({
+              marginBottom: '1.5rem'
+          }), []);
+
+          const BasicInfoTab = React.useMemo(() => (
               <div>
                   <h3 style={{ marginBottom: '2rem', color: '#333' }}>基本情報</h3>
 
-                  <div style={{ marginBottom: '1.5rem' }}>
-                      <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-                          セミナータイトル
-                      </label>
+                  <div style={formGroupStyle}>
+                      <label style={labelStyle}>セミナータイトル</label>
                       <input 
                           type="text" 
                           value={title}
-                          onChange={(e) => setTitle(e.target.value)}
-                          style={{
-                              width: '100%',
-                              padding: '12px',
-                              fontSize: '16px',
-                              border: '2px solid #ddd',
-                              borderRadius: '6px'
-                          }}
+                          onChange={handleTitleChange}
+                          style={inputStyle}
                           placeholder="例：新規顧客獲得セミナー"
+                          autoComplete="off"
                       />
                       <div style={{ marginTop: '0.5rem', fontSize: '0.9rem', color: '#666' }}>
-                          入力された文字: "{title}"
+                          文字数: {title.length}
                       </div>
                   </div>
 
-                  <div style={{ marginBottom: '1.5rem' }}>
-                      <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-                          テーマ・分野
-                      </label>
+                  <div style={formGroupStyle}>
+                      <label style={labelStyle}>テーマ・分野</label>
                       <input 
                           type="text" 
                           value={theme}
-                          onChange={(e) => setTheme(e.target.value)}
-                          style={{
-                              width: '100%',
-                              padding: '12px',
-                              fontSize: '16px',
-                              border: '2px solid #ddd',
-                              borderRadius: '6px'
-                          }}
+                          onChange={handleThemeChange}
+                          style={inputStyle}
                           placeholder="例：デジタルマーケティング"
+                          autoComplete="off"
                       />
                       <div style={{ marginTop: '0.5rem', fontSize: '0.9rem', color: '#666' }}>
-                          入力された文字: "{theme}"
+                          文字数: {theme.length}
                       </div>
                   </div>
 
-                  <div style={{ marginBottom: '1.5rem' }}>
-                      <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-                          目的・ゴール
-                      </label>
+                  <div style={formGroupStyle}>
+                      <label style={labelStyle}>目的・ゴール</label>
                       <textarea 
                           value={objective}
-                          onChange={(e) => setObjective(e.target.value)}
+                          onChange={handleObjectiveChange}
                           style={{
-                              width: '100%',
-                              padding: '12px',
-                              fontSize: '16px',
-                              border: '2px solid #ddd',
-                              borderRadius: '6px',
+                              ...inputStyle,
                               minHeight: '120px',
                               resize: 'vertical'
                           }}
-                          placeholder="セミナーの目的や達成したいゴールを記載"
+                          placeholder="セミナーの目的や達成したいゴールを記載してください"
                       />
                       <div style={{ marginTop: '0.5rem', fontSize: '0.9rem', color: '#666' }}>
                           文字数: {objective.length}
                       </div>
                   </div>
 
-                  <div style={{ marginBottom: '1.5rem' }}>
-                      <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-                          ターゲット参加者
-                      </label>
+                  <div style={formGroupStyle}>
+                      <label style={labelStyle}>ターゲット参加者</label>
                       <textarea 
                           value={targetAudience}
-                          onChange={(e) => setTargetAudience(e.target.value)}
+                          onChange={handleTargetAudienceChange}
                           style={{
-                              width: '100%',
-                              padding: '12px',
-                              fontSize: '16px',
-                              border: '2px solid #ddd',
-                              borderRadius: '6px',
+                              ...inputStyle,
                               minHeight: '100px',
                               resize: 'vertical'
                           }}
-                          placeholder="想定する参加者の属性を記載"
+                          placeholder="想定する参加者の属性を記載してください"
                       />
+                      <div style={{ marginTop: '0.5rem', fontSize: '0.9rem', color: '#666' }}>
+                          文字数: {targetAudience.length}
+                      </div>
                   </div>
 
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                      <div>
-                          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-                              開催日
-                          </label>
+                      <div style={formGroupStyle}>
+                          <label style={labelStyle}>開催日</label>
                           <input 
                               type="date" 
                               value={date}
-                              onChange={(e) => setDate(e.target.value)}
-                              style={{
-                                  width: '100%',
-                                  padding: '12px',
-                                  fontSize: '16px',
-                                  border: '2px solid #ddd',
-                                  borderRadius: '6px'
-                              }}
+                              onChange={handleDateChange}
+                              style={inputStyle}
                           />
                       </div>
-                      <div>
-                          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-                              開催時間
-                          </label>
+                      <div style={formGroupStyle}>
+                          <label style={labelStyle}>開催時間</label>
                           <input 
                               type="time" 
                               value={time}
-                              onChange={(e) => setTime(e.target.value)}
-                              style={{
-                                  width: '100%',
-                                  padding: '12px',
-                                  fontSize: '16px',
-                                  border: '2px solid #ddd',
-                                  borderRadius: '6px'
-                              }}
+                              onChange={handleTimeChange}
+                              style={inputStyle}
                           />
                       </div>
                   </div>
@@ -169,9 +160,10 @@
                       <p><strong>日時:</strong> {date} {time}</p>
                   </div>
               </div>
-          );
+          ), [title, theme, objective, targetAudience, date, time, handleTitleChange, handleThemeChange, handleObjectiveChange,
+  handleTargetAudienceChange, handleDateChange, handleTimeChange, inputStyle, labelStyle, formGroupStyle]);
 
-          const PreviewTab = () => (
+          const PreviewTab = React.useMemo(() => (
               <div>
                   <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
                       <h1 style={{ fontSize: '2rem', color: '#333' }}>セミナー企画書</h1>
@@ -215,7 +207,7 @@
                       </button>
                   </div>
               </div>
-          );
+          ), [title, theme, objective, targetAudience, date, time]);
 
           return (
               <div>
@@ -256,12 +248,12 @@
                           </button>
                       </div>
 
-                      {activeTab === 'basic' && <BasicInfoTab />}
-                      {activeTab === 'preview' && <PreviewTab />}
+                      {activeTab === 'basic' && BasicInfoTab}
+                      {activeTab === 'preview' && PreviewTab}
                   </div>
               </div>
           );
-      }
+      });
 
       const root = ReactDOM.createRoot(document.getElementById('root'));
       root.render(<SeminarApp />);
