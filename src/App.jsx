@@ -1,117 +1,76 @@
-import React, { useState } from 'react';
-import { DefaultSeminarPlan } from './types/seminar.js';
-import BasicInfoForm from './components/BasicInfoForm.jsx';
-import ContentForm from './components/ContentForm.jsx';
-import MarketingForm from './components/MarketingForm.jsx';
-import LogisticsForm from './components/LogisticsForm.jsx';
-import EvaluationForm from './components/EvaluationForm.jsx';
-import PreviewSection from './components/PreviewSection.jsx';
+  import React, { useState } from 'react';
+  import { DefaultSeminarPlan } from './types/seminar.js';
 
-function App() {
-  const [seminarPlan, setSeminarPlan] = useState(DefaultSeminarPlan());
-  const [activeTab, setActiveTab] = useState('basic');
-  const [showPreview, setShowPreview] = useState(false);
+  function App() {
+    const [seminarPlan, setSeminarPlan] = useState(() => {
+      try {
+        return DefaultSeminarPlan();
+      } catch (error) {
+        console.error('Error initializing seminar plan:', error);
+        return {
+          basicInfo: {
+            title: '',
+            theme: '',
+            objective: '',
+            targetAudience: '',
+            expectedParticipants: 0,
+            date: '',
+            time: '',
+            duration: '',
+            venue: '',
+            format: 'offline'
+          }
+        };
+      }
+    });
 
-  const updateSeminarPlan = (section, data) => {
-    setSeminarPlan(prev => ({
-      ...prev,
-      [section]: data
-    }));
-  };
+    return (
+      <div style={{ padding: '2rem', fontFamily: 'Arial, sans-serif' }}>
+        <header style={{ 
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          color: 'white',
+          padding: '2rem',
+          marginBottom: '2rem',
+          textAlign: 'center',
+          borderRadius: '12px'
+        }}>
+          <h1>BtoBセミナー企画書作成アプリ</h1>
+          <p>効果的なセミナー企画書を簡単に作成できます</p>
+        </header>
 
-  const tabs = [
-    { id: 'basic', label: '基本情報', component: BasicInfoForm },
-    { id: 'content', label: 'セミナー内容', component: ContentForm },
-    { id: 'marketing', label: 'マーケティング', component: MarketingForm },
-    { id: 'logistics', label: '運営・予算', component: LogisticsForm },
-    { id: 'evaluation', label: '評価・改善', component: EvaluationForm }
-  ];
+        <div style={{ 
+          background: 'white',
+          padding: '2rem',
+          borderRadius: '12px',
+          boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
+        }}>
+          <h2>アプリが正常に読み込まれました！</h2>
+          <p>セミナータイトル: {seminarPlan?.basicInfo?.title || '未設定'}</p>
 
-  const ActiveComponent = tabs.find(tab => tab.id === activeTab)?.component;
-
-  const exportToPDF = () => {
-    window.print();
-  };
-
-  const exportToJSON = () => {
-    const dataStr = JSON.stringify(seminarPlan, null, 2);
-    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-    const exportFileDefaultName = `seminar-plan-${new Date().toISOString().split('T')[0]}.json`;
-    
-    const linkElement = document.createElement('a');
-    linkElement.setAttribute('href', dataUri);
-    linkElement.setAttribute('download', exportFileDefaultName);
-    linkElement.click();
-  };
-
-  return (
-    <div className="container">
-      <header className="header">
-        <h1>BtoBセミナー企画書作成アプリ</h1>
-        <p>効果的なセミナー企画書を簡単に作成できます</p>
-      </header>
-
-      {!showPreview ? (
-        <>
-          <div className="tabs">
-            {tabs.map(tab => (
-              <button
-                key={tab.id}
-                className={`tab ${activeTab === tab.id ? 'active' : ''}`}
-                onClick={() => setActiveTab(tab.id)}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-
-          <div className="form-section">
-            {ActiveComponent && (
-              <ActiveComponent
-                data={seminarPlan[activeTab]}
-                onUpdate={(data) => updateSeminarPlan(activeTab, data)}
-              />
-            )}
-          </div>
-
-          <div style={{ textAlign: 'center', marginTop: '2rem' }}>
-            <button
-              className="btn btn-secondary"
-              onClick={() => setShowPreview(true)}
-            >
-              プレビューを表示
-            </button>
-          </div>
-        </>
-      ) : (
-        <div>
-          <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-            <button
-              className="btn btn-secondary"
-              onClick={() => setShowPreview(false)}
-            >
-              編集に戻る
-            </button>
-            <button
-              className="btn"
-              onClick={exportToPDF}
-              style={{ marginLeft: '1rem' }}
-            >
-              PDF出力
-            </button>
-            <button
-              className="btn"
-              onClick={exportToJSON}
-              style={{ marginLeft: '1rem' }}
-            >
-              JSON出力
-            </button>
-          </div>
-          <PreviewSection seminarPlan={seminarPlan} />
+          <button 
+            style={{
+              background: '#667eea',
+              color: 'white',
+              padding: '1rem 2rem',
+              border: 'none',
+              borderRadius: '8px',
+              cursor: 'pointer'
+            }}
+            onClick={() => {
+              setSeminarPlan(prev => ({
+                ...prev,
+                basicInfo: {
+                  ...prev.basicInfo,
+                  title: 'テストセミナー'
+                }
+              }));
+            }}
+          >
+            テストボタン - タイトル設定
+          </button>
         </div>
-      )}
-    </div>
-  );
-}
+      </div>
+    );
+  }
 
-export default App;
+  export default App;
