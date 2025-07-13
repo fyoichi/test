@@ -17,47 +17,314 @@
   <body>
       <div id="root"></div>
 
-      <script type="text/babel">
-          function SeminarApp() {
-              const [title, setTitle] = React.useState('');
+  <script type="text/babel">
+      function SeminarApp() {
+          const [seminarData, setSeminarData] = React.useState({
+              title: '',
+              theme: '',
+              objective: '',
+              targetAudience: '',
+              expectedParticipants: 0,
+              date: '',
+              time: '',
+              duration: '',
+              venue: '',
+              format: 'offline'
+          });
+
+          const [activeTab, setActiveTab] = React.useState('basic');
+
+          const updateData = (field, value) => {
+              setSeminarData(prev => ({
+                  ...prev,
+                  [field]: value
+              }));
+          };
+
+          const BasicInfoTab = () => (
+              <div>
+                  <h3>基本情報</h3>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+                      <div>
+                          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>セミナータイトル *</label>
+                          <input 
+                              type="text" 
+                              value={seminarData.title}
+                              onChange={(e) => updateData('title', e.target.value)}
+                              style={{ width: '100%', padding: '0.75rem', borderRadius: '4px', border: '2px solid #e1e5e9' }}
+                              placeholder="例：新規顧客獲得のためのデジタルマーケティング戦略"
+                          />
+                      </div>
+                      <div>
+                          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>テーマ・分野 *</label>
+                          <input 
+                              type="text" 
+                              value={seminarData.theme}
+                              onChange={(e) => updateData('theme', e.target.value)}
+                              style={{ width: '100%', padding: '0.75rem', borderRadius: '4px', border: '2px solid #e1e5e9' }}
+                              placeholder="例：デジタルマーケティング、営業戦略"
+                          />
+                      </div>
+                  </div>
+
+                  <div style={{ marginBottom: '1.5rem' }}>
+                      <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>セミナーの目的・ゴール
+  *</label>
+                      <textarea 
+                          value={seminarData.objective}
+                          onChange={(e) => updateData('objective', e.target.value)}
+                          style={{ width: '100%', padding: '0.75rem', borderRadius: '4px', border: '2px solid #e1e5e9', minHeight:
+  '100px', resize: 'vertical' }}
+                          placeholder="このセミナーで達成したい具体的な目標を記載してください"
+                          rows="3"
+                      />
+                  </div>
+
+                  <div style={{ marginBottom: '1.5rem' }}>
+                      <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>ターゲット参加者 *</label>
+                      <textarea 
+                          value={seminarData.targetAudience}
+                          onChange={(e) => updateData('targetAudience', e.target.value)}
+                          style={{ width: '100%', padding: '0.75rem', borderRadius: '4px', border: '2px solid #e1e5e9', minHeight:
+  '80px', resize: 'vertical' }}
+                          placeholder="例：中小企業の経営者、マーケティング担当者（勤続年数3年以上）"
+                          rows="3"
+                      />
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', 
+  marginBottom: '1rem' }}>
+                      <div>
+                          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>想定参加者数</label>
+                          <input 
+                              type="number" 
+                              value={seminarData.expectedParticipants}
+                              onChange={(e) => updateData('expectedParticipants', parseInt(e.target.value) || 0)}
+                              style={{ width: '100%', padding: '0.75rem', borderRadius: '4px', border: '2px solid #e1e5e9' }}
+                              placeholder="50"
+                              min="1"
+                          />
+                      </div>
+                      <div>
+                          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>開催形式</label>
+                          <select
+                              value={seminarData.format}
+                              onChange={(e) => updateData('format', e.target.value)}
+                              style={{ width: '100%', padding: '0.75rem', borderRadius: '4px', border: '2px solid #e1e5e9' }}
+                          >
+                              <option value="offline">オフライン</option>
+                              <option value="online">オンライン</option>
+                              <option value="hybrid">ハイブリッド</option>
+                          </select>
+                      </div>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+                      <div>
+                          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>開催日</label>
+                          <input 
+                              type="date" 
+                              value={seminarData.date}
+                              onChange={(e) => updateData('date', e.target.value)}
+                              style={{ width: '100%', padding: '0.75rem', borderRadius: '4px', border: '2px solid #e1e5e9' }}
+                          />
+                      </div>
+                      <div>
+                          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>開催時間</label>
+                          <input 
+                              type="time" 
+                              value={seminarData.time}
+                              onChange={(e) => updateData('time', e.target.value)}
+                              style={{ width: '100%', padding: '0.75rem', borderRadius: '4px', border: '2px solid #e1e5e9' }}
+                          />
+                      </div>
+                      <div>
+                          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>所要時間</label>
+                          <input 
+                              type="text" 
+                              value={seminarData.duration}
+                              onChange={(e) => updateData('duration', e.target.value)}
+                              style={{ width: '100%', padding: '0.75rem', borderRadius: '4px', border: '2px solid #e1e5e9' }}
+                              placeholder="例：2時間"
+                          />
+                      </div>
+                  </div>
+
+                  <div>
+                      <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>開催場所・会場</label>
+                      <input 
+                          type="text" 
+                          value={seminarData.venue}
+                          onChange={(e) => updateData('venue', e.target.value)}
+                          style={{ width: '100%', padding: '0.75rem', borderRadius: '4px', border: '2px solid #e1e5e9' }}
+                          placeholder="例：東京国際フォーラム ホールA"
+                      />
+                  </div>
+              </div>
+          );
+
+          const PreviewTab = () => {
+              const formatDate = (dateString) => {
+                  if (!dateString) return '';
+                  const date = new Date(dateString);
+                  return date.toLocaleDateString('ja-JP', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                  });
+              };
 
               return (
                   <div>
-                      <div className="header">
-                          <h1>BtoBセミナー企画書作成アプリ</h1>
-                          <p>効果的なセミナー企画書を簡単に作成</p>
+                      <div style={{ textAlign: 'center', marginBottom: '3rem', borderBottom: '3px solid #667eea', paddingBottom: 
+  '2rem' }}>
+                          <h1 style={{ fontSize: '2.5rem', color: '#333', marginBottom: '1rem' }}>セミナー企画書</h1>
+                          <h2 style={{ fontSize: '1.8rem', color: '#667eea', fontWeight: 'normal' }}>{seminarData.title ||
+  'セミナータイトル未設定'}</h2>
                       </div>
 
-                      <div className="container">
-                          <h2>セミナー基本情報</h2>
-                          <div style={{ marginBottom: '1rem' }}>
-                              <label>セミナータイトル:</label>
-                              <input 
-                                  type="text" 
-                                  value={title}
-                                  onChange={(e) => setTitle(e.target.value)}
-                                  style={{ width: '100%', padding: '0.5rem', marginTop: '0.5rem' }}
-                                  placeholder="例：新規顧客獲得のためのデジタルマーケティング戦略"
-                              />
+                      <section style={{ marginBottom: '3rem' }}>
+                          <h2 style={{ fontSize: '1.5rem', color: '#667eea', borderBottom: '2px solid #667eea', paddingBottom: 
+  '0.5rem', marginBottom: '1.5rem' }}>基本情報</h2>
+
+                          <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '2rem' }}>
+                              <tbody>
+                                  <tr>
+                                      <td style={{ padding: '0.5rem', fontWeight: 'bold', backgroundColor: '#f8f9fa', width: '150px',
+   border: '1px solid #dee2e6' }}>テーマ・分野</td>
+                                      <td style={{ padding: '0.5rem', border: '1px solid #dee2e6' }}>{seminarData.theme ||
+  '未設定'}</td>
+                                  </tr>
+                                  <tr>
+                                      <td style={{ padding: '0.5rem', fontWeight: 'bold', backgroundColor: '#f8f9fa', border: '1px 
+  solid #dee2e6' }}>開催日時</td>
+                                      <td style={{ padding: '0.5rem', border: '1px solid #dee2e6' }}>
+                                          {formatDate(seminarData.date)} {seminarData.time}
+                                      </td>
+                                  </tr>
+                                  <tr>
+                                      <td style={{ padding: '0.5rem', fontWeight: 'bold', backgroundColor: '#f8f9fa', border: '1px 
+  solid #dee2e6' }}>所要時間</td>
+                                      <td style={{ padding: '0.5rem', border: '1px solid #dee2e6' }}>{seminarData.duration ||
+  '未設定'}</td>
+                                  </tr>
+                                  <tr>
+                                      <td style={{ padding: '0.5rem', fontWeight: 'bold', backgroundColor: '#f8f9fa', border: '1px 
+  solid #dee2e6' }}>開催形式</td>
+                                      <td style={{ padding: '0.5rem', border: '1px solid #dee2e6' }}>
+                                          {seminarData.format === 'offline' ? 'オフライン' :
+                                           seminarData.format === 'online' ? 'オンライン' : 'ハイブリッド'}
+                                      </td>
+                                  </tr>
+                                  <tr>
+                                      <td style={{ padding: '0.5rem', fontWeight: 'bold', backgroundColor: '#f8f9fa', border: '1px 
+  solid #dee2e6' }}>会場</td>
+                                      <td style={{ padding: '0.5rem', border: '1px solid #dee2e6' }}>{seminarData.venue ||
+  '未設定'}</td>
+                                  </tr>
+                                  <tr>
+                                      <td style={{ padding: '0.5rem', fontWeight: 'bold', backgroundColor: '#f8f9fa', border: '1px 
+  solid #dee2e6' }}>想定参加者数</td>
+                                      <td style={{ padding: '0.5rem', border: '1px solid #dee2e6' 
+  }}>{seminarData.expectedParticipants}名</td>
+                                  </tr>
+                              </tbody>
+                          </table>
+
+                          <div style={{ marginTop: '2rem' }}>
+                              <h3 style={{ marginBottom: '1rem', color: '#333' }}>目的・ゴール</h3>
+                              <div style={{ padding: '1rem', backgroundColor: '#f8f9fa', borderRadius: '8px', border: '1px solid 
+  #dee2e6' }}>
+                                  {seminarData.objective || '未設定'}
+                              </div>
                           </div>
 
                           <div style={{ marginTop: '2rem' }}>
-                              <h3>入力内容プレビュー:</h3>
-                              <p><strong>タイトル:</strong> {title || '未入力'}</p>
+                              <h3 style={{ marginBottom: '1rem', color: '#333' }}>ターゲット参加者</h3>
+                              <div style={{ padding: '1rem', backgroundColor: '#f8f9fa', borderRadius: '8px', border: '1px solid 
+  #dee2e6' }}>
+                                  {seminarData.targetAudience || '未設定'}
+                              </div>
                           </div>
+                      </section>
 
-                          <button 
-                              className="btn"
-                              onClick={() => alert(`セミナータイトル: ${title}`)}
-                          >
-                              プレビュー表示
-                          </button>
-                      </div>
+                      <footer style={{ textAlign: 'center', marginTop: '3rem', paddingTop: '2rem', borderTop: '1px solid #dee2e6', 
+  color: '#666', fontSize: '0.9rem' }}>
+                          <p>作成日：{new Date().toLocaleDateString('ja-JP')}</p>
+                          <p>BtoBセミナー企画書作成アプリで生成</p>
+                      </footer>
                   </div>
               );
-          }
+          };
 
-          ReactDOM.render(<SeminarApp />, document.getElementById('root'));
-      </script>
+          return (
+              <div>
+                  <div className="header">
+                      <h1>BtoBセミナー企画書作成アプリ</h1>
+                      <p>効果的なセミナー企画書を簡単に作成できます</p>
+                  </div>
+
+                  <div className="container">
+                      <div style={{ display: 'flex', borderBottom: '2px solid #e1e5e9', marginBottom: '2rem' }}>
+                          {['basic', 'preview'].map(tab => (
+                              <button 
+                                  key={tab}
+                                  onClick={() => setActiveTab(tab)}
+                                  style={{
+                                      padding: '1rem 2rem',
+                                      border: 'none',
+                                      background: activeTab === tab ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' :
+  'transparent',
+                                      color: activeTab === tab ? 'white' : '#333',
+                                      cursor: 'pointer',
+                                      borderRadius: '8px 8px 0 0',
+                                      fontSize: '1rem',
+                                      transition: 'all 0.3s ease'
+                                  }}
+                              >
+                                  {tab === 'basic' ? '基本情報' : 'プレビュー'}
+                              </button>
+                          ))}
+                      </div>
+
+                      {activeTab === 'basic' && <BasicInfoTab />}
+                      {activeTab === 'preview' && <PreviewTab />}
+
+                      {activeTab === 'preview' && (
+                          <div style={{ textAlign: 'center', marginTop: '2rem' }}>
+                              <button 
+                                  className="btn"
+                                  onClick={() => {
+                                      const dataStr = JSON.stringify(seminarData, null, 2);
+                                      const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+                                      const exportFileDefaultName = `seminar-plan-${new Date().toISOString().split('T')[0]}.json`;
+
+                                      const linkElement = document.createElement('a');
+                                      linkElement.setAttribute('href', dataUri);
+                                      linkElement.setAttribute('download', exportFileDefaultName);
+                                      linkElement.click();
+                                  }}
+                                  style={{ marginRight: '1rem' }}
+                              >
+                                  JSON出力
+                              </button>
+                              <button 
+                                  className="btn"
+                                  onClick={() => window.print()}
+                              >
+                                  PDF出力
+                              </button>
+                          </div>
+                      )}
+                  </div>
+              </div>
+          );
+      }
+
+      // React 18対応
+      const root = ReactDOM.createRoot(document.getElementById('root'));
+      root.render(<SeminarApp />);
+  </script>
   </body>
   </html>
