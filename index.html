@@ -1,14 +1,63 @@
   <!DOCTYPE html>
-  <html>
+  <html lang="ja">
   <head>
-      <title>テスト</title>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>BtoBセミナー企画書作成アプリ</title>
+      <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+      <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+      <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+      <style>
+          body { font-family: Arial, sans-serif; margin: 0; background: #f5f5f5; }
+          .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; text-align: center; }
+          .container { max-width: 800px; margin: 2rem auto; padding: 2rem; background: white; border-radius: 12px; }
+          .btn { background: #667eea; color: white; padding: 1rem 2rem; border: none; border-radius: 8px; cursor: pointer; }
+      </style>
   </head>
   <body>
-      <h1 style="color: red; font-size: 3rem;">テスト成功！</h1>
-      <p>現在時刻: <span id="time"></span></p>
-      <script>
-          document.getElementById('time').textContent = new Date().toString();
-          console.log('JavaScript動作確認');
+      <div id="root"></div>
+
+      <script type="text/babel">
+          function SeminarApp() {
+              const [title, setTitle] = React.useState('');
+
+              return (
+                  <div>
+                      <div className="header">
+                          <h1>BtoBセミナー企画書作成アプリ</h1>
+                          <p>効果的なセミナー企画書を簡単に作成</p>
+                      </div>
+
+                      <div className="container">
+                          <h2>セミナー基本情報</h2>
+                          <div style={{ marginBottom: '1rem' }}>
+                              <label>セミナータイトル:</label>
+                              <input 
+                                  type="text" 
+                                  value={title}
+                                  onChange={(e) => setTitle(e.target.value)}
+                                  style={{ width: '100%', padding: '0.5rem', marginTop: '0.5rem' }}
+                                  placeholder="例：新規顧客獲得のためのデジタルマーケティング戦略"
+                              />
+                          </div>
+
+                          <div style={{ marginTop: '2rem' }}>
+                              <h3>入力内容プレビュー:</h3>
+                              <p><strong>タイトル:</strong> {title || '未入力'}</p>
+                          </div>
+
+                          <button 
+                              className="btn"
+                              onClick={() => alert(`セミナータイトル: ${title}`)}
+                          >
+                              プレビュー表示
+                          </button>
+                      </div>
+                  </div>
+              );
+          }
+
+          ReactDOM.render(<SeminarApp />, document.getElementById('root'));
       </script>
   </body>
   </html>
