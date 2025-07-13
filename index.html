@@ -41,53 +41,63 @@
               }));
           };
 
+          const inputStyle = {
+              width: '100%',
+              padding: '0.75rem',
+              borderRadius: '4px',
+              border: '2px solid #e1e5e9'
+          };
+
+          const labelStyle = {
+              display: 'block',
+              marginBottom: '0.5rem',
+              fontWeight: 'bold'
+          };
+
           const BasicInfoTab = () => (
               <div>
                   <h3>基本情報</h3>
 
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
                       <div>
-                          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>セミナータイトル *</label>
+                          <label style={labelStyle}>セミナータイトル *</label>
                           <input 
                               type="text" 
                               value={seminarData.title}
                               onChange={(e) => updateData('title', e.target.value)}
-                              style={{ width: '100%', padding: '0.75rem', borderRadius: '4px', border: '2px solid #e1e5e9' }}
+                              style={inputStyle}
                               placeholder="例：新規顧客獲得のためのデジタルマーケティング戦略"
                           />
                       </div>
                       <div>
-                          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>テーマ・分野 *</label>
+                          <label style={labelStyle}>テーマ・分野 *</label>
                           <input 
                               type="text" 
                               value={seminarData.theme}
                               onChange={(e) => updateData('theme', e.target.value)}
-                              style={{ width: '100%', padding: '0.75rem', borderRadius: '4px', border: '2px solid #e1e5e9' }}
+                              style={inputStyle}
                               placeholder="例：デジタルマーケティング、営業戦略"
                           />
                       </div>
                   </div>
 
                   <div style={{ marginBottom: '1.5rem' }}>
-                      <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>セミナーの目的・ゴール
-  *</label>
+                      <label style={labelStyle}>セミナーの目的・ゴール *</label>
                       <textarea 
                           value={seminarData.objective}
                           onChange={(e) => updateData('objective', e.target.value)}
-                          style={{ width: '100%', padding: '0.75rem', borderRadius: '4px', border: '2px solid #e1e5e9', minHeight:
-  '100px', resize: 'vertical' }}
+                          style={{...inputStyle, minHeight: '100px', resize: 'vertical'}}
                           placeholder="このセミナーで達成したい具体的な目標を記載してください"
                           rows="3"
                       />
                   </div>
 
                   <div style={{ marginBottom: '1.5rem' }}>
-                      <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>ターゲット参加者 *</label>
+                      <label style={labelStyle}>ターゲット参加者 *</label>
                       <textarea 
                           value={seminarData.targetAudience}
                           onChange={(e) => updateData('targetAudience', e.target.value)}
-                          style={{ width: '100%', padding: '0.75rem', borderRadius: '4px', border: '2px solid #e1e5e9', minHeight:
-  '80px', resize: 'vertical' }}
+                          style={{...inputStyle, minHeight: '80px', resize: 'vertical'}}
                           placeholder="例：中小企業の経営者、マーケティング担当者（勤続年数3年以上）"
                           rows="3"
                       />
@@ -96,22 +106,22 @@
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', 
   marginBottom: '1rem' }}>
                       <div>
-                          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>想定参加者数</label>
+                          <label style={labelStyle}>想定参加者数</label>
                           <input 
                               type="number" 
                               value={seminarData.expectedParticipants}
                               onChange={(e) => updateData('expectedParticipants', parseInt(e.target.value) || 0)}
-                              style={{ width: '100%', padding: '0.75rem', borderRadius: '4px', border: '2px solid #e1e5e9' }}
+                              style={inputStyle}
                               placeholder="50"
                               min="1"
                           />
                       </div>
                       <div>
-                          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>開催形式</label>
+                          <label style={labelStyle}>開催形式</label>
                           <select
                               value={seminarData.format}
                               onChange={(e) => updateData('format', e.target.value)}
-                              style={{ width: '100%', padding: '0.75rem', borderRadius: '4px', border: '2px solid #e1e5e9' }}
+                              style={inputStyle}
                           >
                               <option value="offline">オフライン</option>
                               <option value="online">オンライン</option>
@@ -122,42 +132,42 @@
 
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
                       <div>
-                          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>開催日</label>
+                          <label style={labelStyle}>開催日</label>
                           <input 
                               type="date" 
                               value={seminarData.date}
                               onChange={(e) => updateData('date', e.target.value)}
-                              style={{ width: '100%', padding: '0.75rem', borderRadius: '4px', border: '2px solid #e1e5e9' }}
+                              style={inputStyle}
                           />
                       </div>
                       <div>
-                          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>開催時間</label>
+                          <label style={labelStyle}>開催時間</label>
                           <input 
                               type="time" 
                               value={seminarData.time}
                               onChange={(e) => updateData('time', e.target.value)}
-                              style={{ width: '100%', padding: '0.75rem', borderRadius: '4px', border: '2px solid #e1e5e9' }}
+                              style={inputStyle}
                           />
                       </div>
                       <div>
-                          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>所要時間</label>
+                          <label style={labelStyle}>所要時間</label>
                           <input 
                               type="text" 
                               value={seminarData.duration}
                               onChange={(e) => updateData('duration', e.target.value)}
-                              style={{ width: '100%', padding: '0.75rem', borderRadius: '4px', border: '2px solid #e1e5e9' }}
+                              style={inputStyle}
                               placeholder="例：2時間"
                           />
                       </div>
                   </div>
 
                   <div>
-                      <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>開催場所・会場</label>
+                      <label style={labelStyle}>開催場所・会場</label>
                       <input 
                           type="text" 
                           value={seminarData.venue}
                           onChange={(e) => updateData('venue', e.target.value)}
-                          style={{ width: '100%', padding: '0.75rem', borderRadius: '4px', border: '2px solid #e1e5e9' }}
+                          style={inputStyle}
                           placeholder="例：東京国際フォーラム ホールA"
                       />
                   </div>
@@ -175,6 +185,23 @@
                   });
               };
 
+              const tableRowStyle = {
+                  border: '1px solid #dee2e6'
+              };
+
+              const headerCellStyle = {
+                  padding: '0.5rem',
+                  fontWeight: 'bold',
+                  backgroundColor: '#f8f9fa',
+                  width: '150px',
+                  border: '1px solid #dee2e6'
+              };
+
+              const dataCellStyle = {
+                  padding: '0.5rem',
+                  border: '1px solid #dee2e6'
+              };
+
               return (
                   <div>
                       <div style={{ textAlign: 'center', marginBottom: '3rem', borderBottom: '3px solid #667eea', paddingBottom: 
@@ -190,44 +217,34 @@
 
                           <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '2rem' }}>
                               <tbody>
-                                  <tr>
-                                      <td style={{ padding: '0.5rem', fontWeight: 'bold', backgroundColor: '#f8f9fa', width: '150px',
-   border: '1px solid #dee2e6' }}>テーマ・分野</td>
-                                      <td style={{ padding: '0.5rem', border: '1px solid #dee2e6' }}>{seminarData.theme ||
-  '未設定'}</td>
+                                  <tr style={tableRowStyle}>
+                                      <td style={headerCellStyle}>テーマ・分野</td>
+                                      <td style={dataCellStyle}>{seminarData.theme || '未設定'}</td>
                                   </tr>
-                                  <tr>
-                                      <td style={{ padding: '0.5rem', fontWeight: 'bold', backgroundColor: '#f8f9fa', border: '1px 
-  solid #dee2e6' }}>開催日時</td>
-                                      <td style={{ padding: '0.5rem', border: '1px solid #dee2e6' }}>
+                                  <tr style={tableRowStyle}>
+                                      <td style={headerCellStyle}>開催日時</td>
+                                      <td style={dataCellStyle}>
                                           {formatDate(seminarData.date)} {seminarData.time}
                                       </td>
                                   </tr>
-                                  <tr>
-                                      <td style={{ padding: '0.5rem', fontWeight: 'bold', backgroundColor: '#f8f9fa', border: '1px 
-  solid #dee2e6' }}>所要時間</td>
-                                      <td style={{ padding: '0.5rem', border: '1px solid #dee2e6' }}>{seminarData.duration ||
-  '未設定'}</td>
+                                  <tr style={tableRowStyle}>
+                                      <td style={headerCellStyle}>所要時間</td>
+                                      <td style={dataCellStyle}>{seminarData.duration || '未設定'}</td>
                                   </tr>
-                                  <tr>
-                                      <td style={{ padding: '0.5rem', fontWeight: 'bold', backgroundColor: '#f8f9fa', border: '1px 
-  solid #dee2e6' }}>開催形式</td>
-                                      <td style={{ padding: '0.5rem', border: '1px solid #dee2e6' }}>
+                                  <tr style={tableRowStyle}>
+                                      <td style={headerCellStyle}>開催形式</td>
+                                      <td style={dataCellStyle}>
                                           {seminarData.format === 'offline' ? 'オフライン' :
                                            seminarData.format === 'online' ? 'オンライン' : 'ハイブリッド'}
                                       </td>
                                   </tr>
-                                  <tr>
-                                      <td style={{ padding: '0.5rem', fontWeight: 'bold', backgroundColor: '#f8f9fa', border: '1px 
-  solid #dee2e6' }}>会場</td>
-                                      <td style={{ padding: '0.5rem', border: '1px solid #dee2e6' }}>{seminarData.venue ||
-  '未設定'}</td>
+                                  <tr style={tableRowStyle}>
+                                      <td style={headerCellStyle}>会場</td>
+                                      <td style={dataCellStyle}>{seminarData.venue || '未設定'}</td>
                                   </tr>
-                                  <tr>
-                                      <td style={{ padding: '0.5rem', fontWeight: 'bold', backgroundColor: '#f8f9fa', border: '1px 
-  solid #dee2e6' }}>想定参加者数</td>
-                                      <td style={{ padding: '0.5rem', border: '1px solid #dee2e6' 
-  }}>{seminarData.expectedParticipants}名</td>
+                                  <tr style={tableRowStyle}>
+                                      <td style={headerCellStyle}>想定参加者数</td>
+                                      <td style={dataCellStyle}>{seminarData.expectedParticipants}名</td>
                                   </tr>
                               </tbody>
                           </table>
@@ -258,6 +275,17 @@
               );
           };
 
+          const tabButtonStyle = (isActive) => ({
+              padding: '1rem 2rem',
+              border: 'none',
+              background: isActive ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'transparent',
+              color: isActive ? 'white' : '#333',
+              cursor: 'pointer',
+              borderRadius: '8px 8px 0 0',
+              fontSize: '1rem',
+              transition: 'all 0.3s ease'
+          });
+
           return (
               <div>
                   <div className="header">
@@ -267,25 +295,18 @@
 
                   <div className="container">
                       <div style={{ display: 'flex', borderBottom: '2px solid #e1e5e9', marginBottom: '2rem' }}>
-                          {['basic', 'preview'].map(tab => (
-                              <button 
-                                  key={tab}
-                                  onClick={() => setActiveTab(tab)}
-                                  style={{
-                                      padding: '1rem 2rem',
-                                      border: 'none',
-                                      background: activeTab === tab ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' :
-  'transparent',
-                                      color: activeTab === tab ? 'white' : '#333',
-                                      cursor: 'pointer',
-                                      borderRadius: '8px 8px 0 0',
-                                      fontSize: '1rem',
-                                      transition: 'all 0.3s ease'
-                                  }}
-                              >
-                                  {tab === 'basic' ? '基本情報' : 'プレビュー'}
-                              </button>
-                          ))}
+                          <button 
+                              onClick={() => setActiveTab('basic')}
+                              style={tabButtonStyle(activeTab === 'basic')}
+                          >
+                              基本情報
+                          </button>
+                          <button 
+                              onClick={() => setActiveTab('preview')}
+                              style={tabButtonStyle(activeTab === 'preview')}
+                          >
+                              プレビュー
+                          </button>
                       </div>
 
                       {activeTab === 'basic' && <BasicInfoTab />}
