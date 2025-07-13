@@ -25,7 +25,10 @@
           const [objective, setObjective] = React.useState('');
           const [targetAudience, setTargetAudience] = React.useState('');
           const [date, setDate] = React.useState('');
-          const [time, setTime] = React.useState('');
+          const [startTime, setStartTime] = React.useState('');
+          const [endTime, setEndTime] = React.useState('');
+          const [venue, setVenue] = React.useState('');
+          const [capacity, setCapacity] = React.useState('');
 
           const [activeTab, setActiveTab] = React.useState('basic');
 
@@ -35,216 +38,485 @@
           const handleObjectiveChange = React.useCallback((e) => setObjective(e.target.value), []);
           const handleTargetAudienceChange = React.useCallback((e) => setTargetAudience(e.target.value), []);
           const handleDateChange = React.useCallback((e) => setDate(e.target.value), []);
-          const handleTimeChange = React.useCallback((e) => setTime(e.target.value), []);
+          const handleStartTimeChange = React.useCallback((e) => setStartTime(e.target.value), []);
+          const handleEndTimeChange = React.useCallback((e) => setEndTime(e.target.value), []);
+          const handleVenueChange = React.useCallback((e) => setVenue(e.target.value), []);
+          const handleCapacityChange = React.useCallback((e) => setCapacity(e.target.value), []);
 
-          // 共通スタイル
-          const inputStyle = React.useMemo(() => ({
-              width: '100%',
-              padding: '12px',
-              fontSize: '16px',
-              border: '2px solid #ddd',
-              borderRadius: '6px',
-              outline: 'none',
-              fontFamily: 'inherit'
+          // リッチなスタイル
+          const styles = React.useMemo(() => ({
+              input: {
+                  width: '100%',
+                  padding: '14px 18px',
+                  fontSize: '16px',
+                  border: '2px solid #e1e8ed',
+                  borderRadius: '12px',
+                  outline: 'none',
+                  fontFamily: 'inherit',
+                  transition: 'all 0.3s ease',
+                  backgroundColor: '#ffffff',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
+              },
+              inputFocus: {
+                  borderColor: '#667eea',
+                  boxShadow: '0 4px 12px rgba(102, 126, 234, 0.15)'
+              },
+              label: {
+                  display: 'block',
+                  marginBottom: '8px',
+                  fontWeight: '600',
+                  color: '#2d3748',
+                  fontSize: '15px',
+                  letterSpacing: '0.02em'
+              },
+              formGroup: {
+                  marginBottom: '24px'
+              },
+              card: {
+                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  borderRadius: '16px',
+                  padding: '2rem',
+                  margin: '1rem',
+                  boxShadow: '0 10px 40px rgba(102, 126, 234, 0.2)',
+                  border: '1px solid rgba(255,255,255,0.2)'
+              },
+              formCard: {
+                  backgroundColor: '#ffffff',
+                  borderRadius: '20px',
+                  padding: '2.5rem',
+                  boxShadow: '0 8px 32px rgba(0,0,0,0.08)',
+                  border: '1px solid #f0f4f8',
+                  margin: '1rem 0'
+              },
+              previewCard: {
+                  backgroundColor: '#ffffff',
+                  borderRadius: '16px',
+                  padding: '2rem',
+                  marginBottom: '1.5rem',
+                  boxShadow: '0 6px 24px rgba(0,0,0,0.06)',
+                  border: '1px solid #e8f2ff'
+              },
+              progressIndicator: {
+                  height: '4px',
+                  backgroundColor: '#e1e8ed',
+                  borderRadius: '2px',
+                  overflow: 'hidden',
+                  marginBottom: '2rem'
+              },
+              progressBar: {
+                  height: '100%',
+                  background: 'linear-gradient(90deg, #667eea 0%, #764ba2 100%)',
+                  borderRadius: '2px',
+                  transition: 'width 0.3s ease'
+              }
           }), []);
 
-          const labelStyle = React.useMemo(() => ({
-              display: 'block',
-              marginBottom: '0.5rem',
-              fontWeight: 'bold',
-              color: '#333'
-          }), []);
+          // 入力完了度の計算
+          const completionPercentage = React.useMemo(() => {
+              const fields = [title, theme, objective, targetAudience, date, startTime, venue];
+              const completedFields = fields.filter(field => field.trim() !== '').length;
+              return (completedFields / fields.length) * 100;
+          }, [title, theme, objective, targetAudience, date, startTime, venue]);
 
-          const formGroupStyle = React.useMemo(() => ({
-              marginBottom: '1.5rem'
-          }), []);
+          // 時刻範囲の表示用関数
+          const formatTimeRange = React.useCallback(() => {
+              if (!startTime) return '未設定';
+              return endTime ? `${startTime} - ${endTime}` : startTime;
+          }, [startTime, endTime]);
 
           const BasicInfoTab = React.useMemo(() => (
-              <div>
-                  <h3 style={{ marginBottom: '2rem', color: '#333' }}>基本情報</h3>
+              <div style={styles.formCard}>
+                  <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+                      <h3 style={{ 
+                          fontSize: '1.8rem', 
+                          color: '#2d3748', 
+                          marginBottom: '0.5rem',
+                          fontWeight: '700'
+                      }}>📋 基本情報</h3>
+                      <p style={{ color: '#718096', fontSize: '1rem' }}>セミナーの基本的な情報を入力してください</p>
 
-                  <div style={formGroupStyle}>
-                      <label style={labelStyle}>セミナータイトル</label>
+                      {/* プログレスバー */}
+                      <div style={styles.progressIndicator}>
+                          <div style={{
+                              ...styles.progressBar,
+                              width: `${completionPercentage}%`
+                          }}></div>
+                      </div>
+                      <p style={{ color: '#667eea', fontSize: '0.9rem', fontWeight: '600' }}>
+                          完了度: {Math.round(completionPercentage)}%
+                      </p>
+                  </div>
+
+                  <div style={styles.formGroup}>
+                      <label style={styles.label}>✨ セミナータイトル</label>
                       <input 
                           type="text" 
                           value={title}
                           onChange={handleTitleChange}
-                          style={inputStyle}
-                          placeholder="例：新規顧客獲得セミナー"
+                          style={styles.input}
+                          placeholder="例：新規顧客獲得のためのBtoBマーケティング戦略セミナー"
                           autoComplete="off"
+                          onFocus={(e) => e.target.style.borderColor = '#667eea'}
+                          onBlur={(e) => e.target.style.borderColor = '#e1e8ed'}
                       />
-                      <div style={{ marginTop: '0.5rem', fontSize: '0.9rem', color: '#666' }}>
-                          文字数: {title.length}
+                      <div style={{ marginTop: '6px', fontSize: '0.85rem', color: title.length > 50 ? '#e53e3e' : '#718096' }}>
+                          {title.length}/80文字 {title.length > 50 && '(推奨: 50文字以下)'}
                       </div>
                   </div>
 
-                  <div style={formGroupStyle}>
-                      <label style={labelStyle}>テーマ・分野</label>
-                      <input 
-                          type="text" 
-                          value={theme}
-                          onChange={handleThemeChange}
-                          style={inputStyle}
-                          placeholder="例：デジタルマーケティング"
-                          autoComplete="off"
-                      />
-                      <div style={{ marginTop: '0.5rem', fontSize: '0.9rem', color: '#666' }}>
-                          文字数: {theme.length}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+                      <div style={styles.formGroup}>
+                          <label style={styles.label}>🎯 テーマ・分野</label>
+                          <input 
+                              type="text" 
+                              value={theme}
+                              onChange={handleThemeChange}
+                              style={styles.input}
+                              placeholder="例：デジタルマーケティング"
+                              autoComplete="off"
+                              onFocus={(e) => e.target.style.borderColor = '#667eea'}
+                              onBlur={(e) => e.target.style.borderColor = '#e1e8ed'}
+                          />
+                      </div>
+
+                      <div style={styles.formGroup}>
+                          <label style={styles.label}>👥 定員</label>
+                          <input 
+                              type="number" 
+                              value={capacity}
+                              onChange={handleCapacityChange}
+                              style={styles.input}
+                              placeholder="例：50"
+                              min="1"
+                              onFocus={(e) => e.target.style.borderColor = '#667eea'}
+                              onBlur={(e) => e.target.style.borderColor = '#e1e8ed'}
+                          />
                       </div>
                   </div>
 
-                  <div style={formGroupStyle}>
-                      <label style={labelStyle}>目的・ゴール</label>
+                  <div style={styles.formGroup}>
+                      <label style={styles.label}>🎯 目的・ゴール</label>
                       <textarea 
                           value={objective}
                           onChange={handleObjectiveChange}
                           style={{
-                              ...inputStyle,
+                              ...styles.input,
                               minHeight: '120px',
                               resize: 'vertical'
                           }}
-                          placeholder="セミナーの目的や達成したいゴールを記載してください"
+                          placeholder="このセミナーで参加者が得られる具体的な価値や学習目標を記載してください"
+                          onFocus={(e) => e.target.style.borderColor = '#667eea'}
+                          onBlur={(e) => e.target.style.borderColor = '#e1e8ed'}
                       />
-                      <div style={{ marginTop: '0.5rem', fontSize: '0.9rem', color: '#666' }}>
-                          文字数: {objective.length}
+                      <div style={{ marginTop: '6px', fontSize: '0.85rem', color: '#718096' }}>
+                          {objective.length}文字
                       </div>
                   </div>
 
-                  <div style={formGroupStyle}>
-                      <label style={labelStyle}>ターゲット参加者</label>
+                  <div style={styles.formGroup}>
+                      <label style={styles.label}>🎯 ターゲット参加者</label>
                       <textarea 
                           value={targetAudience}
                           onChange={handleTargetAudienceChange}
                           style={{
-                              ...inputStyle,
+                              ...styles.input,
                               minHeight: '100px',
                               resize: 'vertical'
                           }}
-                          placeholder="想定する参加者の属性を記載してください"
+                          placeholder="例：中小企業の経営者・マーケティング担当者（マーケティング経験3年以上）"
+                          onFocus={(e) => e.target.style.borderColor = '#667eea'}
+                          onBlur={(e) => e.target.style.borderColor = '#e1e8ed'}
                       />
-                      <div style={{ marginTop: '0.5rem', fontSize: '0.9rem', color: '#666' }}>
-                          文字数: {targetAudience.length}
-                      </div>
                   </div>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                      <div style={formGroupStyle}>
-                          <label style={labelStyle}>開催日</label>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1.5rem' }}>
+                      <div style={styles.formGroup}>
+                          <label style={styles.label}>📅 開催日</label>
                           <input 
                               type="date" 
                               value={date}
                               onChange={handleDateChange}
-                              style={inputStyle}
+                              style={styles.input}
+                              onFocus={(e) => e.target.style.borderColor = '#667eea'}
+                              onBlur={(e) => e.target.style.borderColor = '#e1e8ed'}
                           />
                       </div>
-                      <div style={formGroupStyle}>
-                          <label style={labelStyle}>開催時間</label>
+                      <div style={styles.formGroup}>
+                          <label style={styles.label}>🕐 開始時刻</label>
                           <input 
                               type="time" 
-                              value={time}
-                              onChange={handleTimeChange}
-                              style={inputStyle}
+                              value={startTime}
+                              onChange={handleStartTimeChange}
+                              style={styles.input}
+                              onFocus={(e) => e.target.style.borderColor = '#667eea'}
+                              onBlur={(e) => e.target.style.borderColor = '#e1e8ed'}
                           />
                       </div>
+                      <div style={styles.formGroup}>
+                          <label style={styles.label}>🕐 終了時刻</label>
+                          <input 
+                              type="time" 
+                              value={endTime}
+                              onChange={handleEndTimeChange}
+                              style={styles.input}
+                              onFocus={(e) => e.target.style.borderColor = '#667eea'}
+                              onBlur={(e) => e.target.style.borderColor = '#e1e8ed'}
+                          />
+                      </div>
+                  </div>
+
+                  <div style={styles.formGroup}>
+                      <label style={styles.label}>📍 開催場所・会場</label>
+                      <input 
+                          type="text" 
+                          value={venue}
+                          onChange={handleVenueChange}
+                          style={styles.input}
+                          placeholder="例：東京国際フォーラム ホールA / オンライン（Zoom）"
+                          autoComplete="off"
+                          onFocus={(e) => e.target.style.borderColor = '#667eea'}
+                          onBlur={(e) => e.target.style.borderColor = '#e1e8ed'}
+                      />
                   </div>
 
                   <div style={{ 
                       marginTop: '2rem', 
-                      padding: '1rem', 
-                      backgroundColor: '#e8f4fd', 
-                      borderRadius: '6px' 
+                      padding: '1.5rem', 
+                      background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                      borderRadius: '12px',
+                      color: 'white'
                   }}>
-                      <h4>リアルタイム確認</h4>
-                      <p><strong>タイトル:</strong> {title}</p>
-                      <p><strong>テーマ:</strong> {theme}</p>
-                      <p><strong>日時:</strong> {date} {time}</p>
+                      <h4 style={{ margin: '0 0 1rem 0', fontSize: '1.1rem' }}>📊 リアルタイム確認</h4>
+                      <p style={{ margin: '0.5rem 0' }}><strong>タイトル:</strong> {title || '未設定'}</p>
+                      <p style={{ margin: '0.5rem 0' }}><strong>テーマ:</strong> {theme || '未設定'}</p>
+                      <p style={{ margin: '0.5rem 0' }}><strong>日時:</strong> {date || '未設定'} {formatTimeRange()}</p>
+                      <p style={{ margin: '0.5rem 0' }}><strong>会場:</strong> {venue || '未設定'}</p>
                   </div>
               </div>
-          ), [title, theme, objective, targetAudience, date, time, handleTitleChange, handleThemeChange, handleObjectiveChange,
-  handleTargetAudienceChange, handleDateChange, handleTimeChange, inputStyle, labelStyle, formGroupStyle]);
+          ), [title, theme, objective, targetAudience, date, startTime, endTime, venue, capacity, completionPercentage,
+  formatTimeRange, handleTitleChange, handleThemeChange, handleObjectiveChange, handleTargetAudienceChange, handleDateChange,
+  handleStartTimeChange, handleEndTimeChange, handleVenueChange, handleCapacityChange, styles]);
 
           const PreviewTab = React.useMemo(() => (
               <div>
-                  <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-                      <h1 style={{ fontSize: '2rem', color: '#333' }}>セミナー企画書</h1>
-                      <h2 style={{ fontSize: '1.5rem', color: '#667eea' }}>
-                          {title || 'タイトル未設定'}
+                  <div style={{
+                      textAlign: 'center',
+                      marginBottom: '3rem',
+                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                      color: 'white',
+                      padding: '3rem 2rem',
+                      borderRadius: '20px',
+                      boxShadow: '0 15px 35px rgba(102, 126, 234, 0.3)'
+                  }}>
+                      <h1 style={{ fontSize: '2.5rem', margin: '0 0 1rem 0', fontWeight: '700' }}>📋 セミナー企画書</h1>
+                      <h2 style={{ fontSize: '1.8rem', margin: '0', fontWeight: '400', opacity: '0.95' }}>
+                          {title || 'セミナータイトル未設定'}
                       </h2>
                   </div>
 
-                  <div style={{ padding: '1.5rem', backgroundColor: '#f8f9fa', borderRadius: '8px' }}>
-                      <h3>基本情報</h3>
-                      <p><strong>テーマ：</strong> {theme || '未設定'}</p>
-                      <p><strong>開催日時：</strong> {date || '未設定'} {time || ''}</p>
-                      <p><strong>目的：</strong> {objective || '未設定'}</p>
-                      <p><strong>ターゲット：</strong> {targetAudience || '未設定'}</p>
+                  <div style={styles.previewCard}>
+                      <h3 style={{ 
+                          fontSize: '1.5rem', 
+                          color: '#2d3748', 
+                          marginBottom: '1.5rem',
+                          borderBottom: '3px solid #667eea',
+                          paddingBottom: '0.5rem',
+                          fontWeight: '700'
+                      }}>📊 基本情報</h3>
+
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
+                          <div>
+                              <div style={{ marginBottom: '1rem' }}>
+                                  <strong style={{ color: '#4a5568', display: 'block', marginBottom: '0.3rem' }}>🎯
+  テーマ・分野</strong>
+                                  <span style={{ fontSize: '1.1rem', color: '#2d3748' }}>{theme || '未設定'}</span>
+                              </div>
+
+                              <div style={{ marginBottom: '1rem' }}>
+                                  <strong style={{ color: '#4a5568', display: 'block', marginBottom: '0.3rem' }}>📅 開催日時</strong>
+                                  <span style={{ fontSize: '1.1rem', color: '#2d3748' }}>
+                                      {date ? new Date(date).toLocaleDateString('ja-JP', {
+                                          year: 'numeric',
+                                          month: 'long',
+                                          day: 'numeric',
+                                          weekday: 'short'
+                                      }) : '未設定'} {formatTimeRange()}
+                                  </span>
+                              </div>
+
+                              <div style={{ marginBottom: '1rem' }}>
+                                  <strong style={{ color: '#4a5568', display: 'block', marginBottom: '0.3rem' }}>📍 開催場所</strong>
+                                  <span style={{ fontSize: '1.1rem', color: '#2d3748' }}>{venue || '未設定'}</span>
+                              </div>
+                          </div>
+
+                          <div>
+                              <div style={{ marginBottom: '1rem' }}>
+                                  <strong style={{ color: '#4a5568', display: 'block', marginBottom: '0.3rem' }}>👥 定員</strong>
+                                  <span style={{ fontSize: '1.1rem', color: '#2d3748' }}>{capacity ? `${capacity}名` :
+  '未設定'}</span>
+                              </div>
+                          </div>
+                      </div>
                   </div>
 
-                  <div style={{ textAlign: 'center', marginTop: '2rem' }}>
+                  <div style={styles.previewCard}>
+                      <h3 style={{ 
+                          fontSize: '1.3rem', 
+                          color: '#2d3748', 
+                          marginBottom: '1rem',
+                          fontWeight: '600'
+                      }}>🎯 目的・ゴール</h3>
+                      <div style={{ 
+                          padding: '1.5rem', 
+                          backgroundColor: '#f7fafc', 
+                          borderRadius: '12px', 
+                          border: '2px solid #e2e8f0',
+                          fontSize: '1.05rem',
+                          lineHeight: '1.6',
+                          color: '#2d3748'
+                      }}>
+                          {objective || '未設定'}
+                      </div>
+                  </div>
+
+                  <div style={styles.previewCard}>
+                      <h3 style={{ 
+                          fontSize: '1.3rem', 
+                          color: '#2d3748', 
+                          marginBottom: '1rem',
+                          fontWeight: '600'
+                      }}>🎯 ターゲット参加者</h3>
+                      <div style={{ 
+                          padding: '1.5rem', 
+                          backgroundColor: '#f7fafc', 
+                          borderRadius: '12px', 
+                          border: '2px solid #e2e8f0',
+                          fontSize: '1.05rem',
+                          lineHeight: '1.6',
+                          color: '#2d3748'
+                      }}>
+                          {targetAudience || '未設定'}
+                      </div>
+                  </div>
+
+                  <div style={{ textAlign: 'center', marginTop: '3rem' }}>
                       <button 
                           className="btn"
                           onClick={() => {
                               const data = {
-                                  title, theme, objective, targetAudience, date, time
+                                  title, theme, objective, targetAudience, date,
+                                  startTime, endTime, venue, capacity,
+                                  timeRange: formatTimeRange()
                               };
                               const jsonStr = JSON.stringify(data, null, 2);
                               const blob = new Blob([jsonStr], {type: 'application/json'});
                               const url = URL.createObjectURL(blob);
                               const a = document.createElement('a');
                               a.href = url;
-                              a.download = 'seminar-plan.json';
+                              a.download = `seminar-plan-${date || 'draft'}.json`;
                               a.click();
                           }}
-                          style={{ marginRight: '1rem' }}
+                          style={{
+                              marginRight: '1rem',
+                              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                              border: 'none',
+                              padding: '12px 24px',
+                              borderRadius: '12px',
+                              color: 'white',
+                              fontSize: '1rem',
+                              fontWeight: '600',
+                              cursor: 'pointer',
+                              boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)',
+                              transition: 'all 0.3s ease'
+                          }}
+                          onMouseOver={(e) => e.target.style.transform = 'translateY(-2px)'}
+                          onMouseOut={(e) => e.target.style.transform = 'translateY(0)'}
                       >
-                          JSON出力
+                          📄 JSON出力
                       </button>
                       <button 
                           className="btn"
                           onClick={() => window.print()}
+                          style={{
+                              background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                              border: 'none',
+                              padding: '12px 24px',
+                              borderRadius: '12px',
+                              color: 'white',
+                              fontSize: '1rem',
+                              fontWeight: '600',
+                              cursor: 'pointer',
+                              boxShadow: '0 4px 15px rgba(245, 87, 108, 0.3)',
+                              transition: 'all 0.3s ease'
+                          }}
+                          onMouseOver={(e) => e.target.style.transform = 'translateY(-2px)'}
+                          onMouseOut={(e) => e.target.style.transform = 'translateY(0)'}
                       >
-                          PDF出力
+                          🖨️ PDF出力
                       </button>
                   </div>
               </div>
-          ), [title, theme, objective, targetAudience, date, time]);
+          ), [title, theme, objective, targetAudience, date, startTime, endTime, venue, capacity, formatTimeRange, styles]);
 
           return (
               <div>
-                  <div className="header">
-                      <h1>BtoBセミナー企画書作成アプリ</h1>
-                      <p>効果的なセミナー企画書を簡単に作成</p>
+                  <div className="header" style={{
+                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                      padding: '3rem 0',
+                      textAlign: 'center',
+                      color: 'white',
+                      boxShadow: '0 8px 32px rgba(102, 126, 234, 0.3)'
+                  }}>
+                      <h1 style={{ fontSize: '2.8rem', margin: '0 0 1rem 0', fontWeight: '700' }}>🚀
+  BtoBセミナー企画書作成アプリ</h1>
+                      <p style={{ fontSize: '1.2rem', margin: '0', opacity: '0.9' }}>効果的なセミナー企画書を簡単に作成</p>
                   </div>
 
-                  <div className="container">
-                      <div style={{ display: 'flex', marginBottom: '2rem', borderBottom: '2px solid #e1e5e9' }}>
+                  <div className="container" style={{ maxWidth: '1000px', margin: '0 auto', padding: '2rem' }}>
+                      <div style={{ 
+                          display: 'flex', 
+                          marginBottom: '2rem', 
+                          background: '#ffffff',
+                          borderRadius: '16px',
+                          padding: '8px',
+                          boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
+                      }}>
                           <button 
                               onClick={() => setActiveTab('basic')}
                               style={{
+                                  flex: 1,
                                   padding: '1rem 2rem',
                                   border: 'none',
-                                  background: activeTab === 'basic' ? '#667eea' : '#f8f9fa',
-                                  color: activeTab === 'basic' ? 'white' : '#333',
+                                  background: activeTab === 'basic' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' :
+  'transparent',
+                                  color: activeTab === 'basic' ? 'white' : '#4a5568',
                                   cursor: 'pointer',
-                                  borderRadius: '8px 8px 0 0',
-                                  fontSize: '1rem'
+                                  borderRadius: '12px',
+                                  fontSize: '1.1rem',
+                                  fontWeight: '600',
+                                  transition: 'all 0.3s ease'
                               }}
                           >
-                              基本情報
+                              📝 基本情報
                           </button>
                           <button 
                               onClick={() => setActiveTab('preview')}
                               style={{
+                                  flex: 1,
                                   padding: '1rem 2rem',
                                   border: 'none',
-                                  background: activeTab === 'preview' ? '#667eea' : '#f8f9fa',
-                                  color: activeTab === 'preview' ? 'white' : '#333',
+                                  background: activeTab === 'preview' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' :
+  'transparent',
+                                  color: activeTab === 'preview' ? 'white' : '#4a5568',
                                   cursor: 'pointer',
-                                  borderRadius: '8px 8px 0 0',
-                                  fontSize: '1rem'
+                                  borderRadius: '12px',
+                                  fontSize: '1.1rem',
+                                  fontWeight: '600',
+                                  transition: 'all 0.3s ease'
                               }}
                           >
-                              プレビュー
+                              👁️ プレビュー
                           </button>
                       </div>
 
